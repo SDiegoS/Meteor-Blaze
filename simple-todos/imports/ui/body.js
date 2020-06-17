@@ -1,16 +1,30 @@
 import { Template } from 'meteor/templating';
+import { ReactiveDict } from 'meteor/reactive-dict';
 
 import { Tasks } from '../api/tasks.js';
 
 import  './task.js';
 import './body.html';
 
+Template.body.onCreated(function bodyOnCreated() {
+    this.state = new ReactiveDict();
+})
+
 Template.body.helpers({
     tasks() {
+        const instance = Template.instance();
+        if (instance.state.get('hideCompleted')) {
+            // Se ocultar concluído estiver marcado, filtre as tarefas
+            return Tasks.find({ checked: {$ne: true}}, { sort: {createdAt: -1}});
+        }
+
         return Tasks.find({}, {
-            // Mostra as tarefas mais recentes na parte superior
+            // Caso contrário, retorne todas as tarefas
             sort: {createdAt: -1}
         });
+    },
+    incompleteCount() {
+        return Tasks.find({ checked: {$ne: true}}).count();
     },
 });
 
@@ -32,5 +46,8 @@ Template.body.events({
 
         // Forma limpa
         target.text.value = '';
+    },
+    'change .hide-completed input'(event, instance) {
+        instance.state.set('hideCompleted', event.target.checked);
     },
 })
