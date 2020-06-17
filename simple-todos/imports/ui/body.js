@@ -38,6 +38,8 @@ Template.body.events({
         const target = event.target;
         const text = target.text.value;
 
+        Meteor.call('tasks.insert', text);
+
         // Insere uma tarefa na coleção
         Tasks.insert({
             text,
