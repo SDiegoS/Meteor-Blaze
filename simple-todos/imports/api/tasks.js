@@ -47,6 +47,10 @@ Meteor.methods({
         Tasks.remove(taskId);
     },
     'tasks.delete-all-checked'(){
+        let tarefasConcluidas = Tasks.find({ checked: true}, {fields: {_id: 1}}).fetch();
+        if (tarefasConcluidas.length) {
+            tarefasConcluidas.forEach(task => Meteor.call('tasks.remove', task._id));
+        }
 
     },
     'tasks.setChecked'(taskId, setChecked) {

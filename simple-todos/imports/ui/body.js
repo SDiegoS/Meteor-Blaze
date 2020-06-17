@@ -30,6 +30,9 @@ Template.body.helpers({
 });
 
 Template.body.events({
+    'click .delete-all-checked'() {
+        Meteor.call('tasks.delete-all-checked');
+    },
     'submit .new-task'(event) {
         //Impedir o envio do formulário padrão do navegador
         event.preventDefault();
