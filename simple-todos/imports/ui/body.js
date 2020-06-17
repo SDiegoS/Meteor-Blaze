@@ -31,26 +31,19 @@ Template.body.helpers({
 
 Template.body.events({
     'submit .new-task'(event) {
-        console.log(event);
         //Impedir o envio do formulário padrão do navegador
         event.preventDefault();
 
         // Obter valor do elemento do formulário
         const target = event.target;
         const text = target.text.value;
+        const description = target.description.value;
 
-        Meteor.call('tasks.insert', text);
-
-        // Insere uma tarefa na coleção
-        Tasks.insert({
-            text,
-            createdAt: new Date(),
-            owner: Meteor.userId(),
-            username: Meteor.user().username,
-        });
+        Meteor.call('tasks.insert', text, description);
 
         // Forma limpa
         target.text.value = '';
+        target.description.value = '';
     },
     'change .hide-completed input'(event, instance) {
         instance.state.set('hideCompleted', event.target.checked);

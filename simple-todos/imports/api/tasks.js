@@ -18,8 +18,9 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-    'tasks.insert'(text) {
+    'tasks.insert'(text, description) {
         check(text, String);
+        check(description, String);
 
         // Verifique se o usuário está conectado antes de inserir uma tarefak
         if (! this.userId) {
@@ -28,6 +29,7 @@ Meteor.methods({
 
         Tasks.insert({
             text,
+            description,
             createdAt: new Date(),
             owner: this.userId,
             username: Meteor.users.findOne(this.userId).username,
@@ -43,6 +45,9 @@ Meteor.methods({
         }
 
         Tasks.remove(taskId);
+    },
+    'tasks.delete-all-checked'(){
+
     },
     'tasks.setChecked'(taskId, setChecked) {
         check(taskId, String);

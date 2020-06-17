@@ -59,6 +59,11 @@ form {
   font-size: 1em;
 }
 
+.new-task #sub{
+  width: 10%;
+  cursor: pointer;
+}
+
 .new-task input:focus{
   outline: 0;
 }
@@ -70,6 +75,15 @@ ul {
 }
 
 .delete {
+  float: right;
+  font-weight: bold;
+  background: none;
+  font-size: 1em;
+  border: none;
+  position: relative;
+}
+
+.delete-all-checked{
   float: right;
   font-weight: bold;
   background: none;
