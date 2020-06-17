@@ -83,7 +83,16 @@ ul {
   position: relative;
 }
 
-.delete-all-checked{
+.delete-all-checked {
+  float: right;
+  font-weight: bold;
+  background: none;
+  font-size: 1em;
+  border: none;
+  position: relative;
+}
+
+.upd {
   float: right;
   font-weight: bold;
   background: none;

@@ -15,6 +15,9 @@ Template.task.events({
         // Defina a propriedade marcada para o oposto do seu valor atual
         Meteor.call('tasks.setChecked', this._id, !this.checked);
     },
+    'click .upd'(){
+        Meteor.call('tasks.setUpdate', this._id);
+    },
     'click .delete'() {
         Meteor.call('tasks.remove', this._id);
     },
