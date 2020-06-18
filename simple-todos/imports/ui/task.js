@@ -37,14 +37,18 @@ Template.task.events({
     'click .upd'(){
         let upd = Template.instance().upd.get();
 
-        if (upd){
+        const text = $('#edit').val() !== this.text ? $('#edit').val() : false;
+        const description = $('#editDesc').val() !== this.description ? $('#editDesc').val() : false;
+
+        if (upd && (text || description)){
             const update = {
                 _id: this._id,
-                $set: {
-                    text: $('#edit').val(),
-                    description: $('#editDesc').val()
-                }
+                $set: {}
             };
+
+            if(text) update.$set.text = text
+            if(description) update.$set.description = description
+
             Meteor.call('tasks.setUpdate', update);
         }
 
