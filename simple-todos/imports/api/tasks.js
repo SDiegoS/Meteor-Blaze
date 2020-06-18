@@ -34,15 +34,17 @@ Meteor.methods({
         // Verifique se o usuário está conectado antes de inserir uma tarefak
         if (! this.userId) {
             throw new Meteor.Error('not-authorized');
-        }
+        }else {
+            Tasks.insert({
+                text,
+                description,
+                private: true,
+                createdAt: new Date(),
+                owner: this.userId,
+                username: Meteor.users.findOne(this.userId).username,
+            });
+        };
 
-        Tasks.insert({
-            text,
-            description,
-            createdAt: new Date(),
-            owner: this.userId,
-            username: Meteor.users.findOne(this.userId).username,
-        });
     },
     'hists.setHist'(hist){
         check(hist, Object);
@@ -56,11 +58,11 @@ Meteor.methods({
             if (task.private && task.owner !== this.userId) {
                 // Se a tarefa for privada, verifique se apenas o proprietário pode altera-la
                 throw new Meteor.Error('not-authorized');
-            }
+            }else {
             //Adiciona Historico
-            console.log(hist)
             Hists.insert(hist);
-        }
+            };
+        };
     },
     'tasks.setUpdate'(update){
         check(update, Object);
@@ -72,17 +74,18 @@ Meteor.methods({
             if (task.private && task.owner !== this.userId) {
                 // Se a tarefa for privada, verifique se apenas o proprietário pode altera-la
                 throw new Meteor.Error('not-authorized');
-            }
-            if(Tasks.update({_id: update._id}, { $set:  update.$set})){
-                const hist = {
-                    id_task: update._id,
-                    histTime: new Date(),
-                    desc: 'Update',
-                    user_name: Meteor.users.findOne(this.userId).username
-                }
-                Meteor.call('hists.setHist', hist)
-            }
-        }
+            }else {
+                if(Tasks.update({_id: update._id}, { $set:  update.$set})){
+                    const hist = {
+                        id_task: update._id,
+                        histTime: new Date(),
+                        desc: 'Update',
+                        user_name: Meteor.users.findOne(this.userId).username
+                    }
+                    Meteor.call('hists.setHist', hist)
+                };
+            };
+        };
     },
     'tasks.remove'(taskId) {
         check(taskId, String);
@@ -91,20 +94,27 @@ Meteor.methods({
         if (task.private && task.owner !== this.userId) {
             // Se a tarefa for privada, verifique se apenas o proprietário pode excluí-la
             throw new Meteor.Error('not-authorized');
+        }else{
+            Tasks.remove(taskId);
         }
 
-        Tasks.remove(taskId);
     },
     'tasks.removeHist'(taskId) {
         check(taskId, String);
 
-        Tasks.remove(taskId);
+        const task = Tasks.findOne(taskId);
+        if (task.private && task.owner !== this.userId) {
+            // Se a tarefa for privada, verifique se apenas o proprietário pode excluí-la
+            throw new Meteor.Error('not-authorized');
+        }else{
+            Hists.remove({id_task: taskId });
+        }
     },
     'tasks.delete-all-checked'(){
         let tarefasConcluidas = Tasks.find({ checked: true}, {fields: {_id: 1}}).fetch();
         if (tarefasConcluidas.length) {
             tarefasConcluidas.forEach(task => Meteor.call('tasks.remove', task._id));
-        }
+        };
 
     },
     'tasks.setChecked'(taskId, setChecked) {
@@ -115,9 +125,28 @@ Meteor.methods({
         if (task.private && task.owner !== this.userId) {
             // Se a tarefa for privada, verifique se apenas o proprietário pode excluí-la
             throw new Meteor.Error('not-authorized');
-        }
+        }else{
+            if(Tasks.update(taskId, { $set: { checked: setChecked } })){
+                if(setChecked){
+                    const hist = {
+                        id_task: task._id,
+                        histTime: new Date(),
+                        desc: 'Checado',
+                        user_name: Meteor.users.findOne(this.userId).username
+                    };
+                        Meteor.call('hists.setHist', hist);
+                } else{
+                    const hist = {
+                        id_task: task._id,
+                        histTime: new Date(),
+                        desc: 'Deschecado',
+                        user_name: Meteor.users.findOne(this.userId).username
+                    };
+                        Meteor.call('hists.setHist', hist);
+                }
+            };
+        };
 
-        Tasks.update(taskId, { $set: { checked: setChecked } });
     },
     'tasks.setPrivate'(taskId, setToPrivate){
         check(taskId, String);
@@ -128,7 +157,8 @@ Meteor.methods({
         // Verifique se apenas o proprietário da tarefa pode tornar uma tarefa privada
         if (task.owner !== this.userId) {
             throw new Meteor.Error('not-authorized');
-        }
-        Tasks.update(taskId, {$set: {private: setToPrivate}});
+        }else {
+            Tasks.update(taskId, {$set: {private: setToPrivate}});
+        };
     }
 });

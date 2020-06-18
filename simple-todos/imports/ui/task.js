@@ -20,8 +20,6 @@ Template.task.helpers({
        return Template.instance().upd.get()
     },
     hist() {
-        const instance = Template.instance();
-
        return Template.instance().hist.get();
     },
     hists(){
@@ -53,8 +51,8 @@ Template.task.events({
         upd = upd ? Template.instance().upd.set(false) : Template.instance().upd.set(true);
     },
     'click .delete'() {
+        Meteor.call('tasks.removeHist', this._id);
         Meteor.call('tasks.remove', this._id);
-        Meteor.call('tasks.removeHist', this._id)
     },
     'click .toggle-private'(){
         Meteor.call('tasks.setPrivate', this._id, !this.private);

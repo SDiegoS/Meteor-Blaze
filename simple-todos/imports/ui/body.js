@@ -5,7 +5,6 @@ import { Tasks } from '../api/tasks.js';
 
 import  './task.js';
 import './body.html';
-import {Hists} from "../api/tasks";
 
 Template.body.onCreated(function bodyOnCreated() {
     this.state = new ReactiveDict();
