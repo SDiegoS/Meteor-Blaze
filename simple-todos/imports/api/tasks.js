@@ -89,6 +89,7 @@ Meteor.methods({
                     id_task: update._id,
                     histTime: new Date(),
                     desc: msgHist,
+                    acao: "Update",
                     user_name: Meteor.users.findOne(this.userId).username
                 }
                 Meteor.call('hists.setHist', hist)
@@ -140,6 +141,7 @@ Meteor.methods({
                         id_task: task._id,
                         histTime: new Date(),
                         desc: 'Checado',
+                        acao: 'Checagem',
                         user_name: Meteor.users.findOne(this.userId).username
                     };
                         Meteor.call('hists.setHist', hist);
@@ -148,6 +150,7 @@ Meteor.methods({
                         id_task: task._id,
                         histTime: new Date(),
                         desc: 'Deschecado',
+                        acao: 'Deschecagem',
                         user_name: Meteor.users.findOne(this.userId).username
                     };
                         Meteor.call('hists.setHist', hist);
