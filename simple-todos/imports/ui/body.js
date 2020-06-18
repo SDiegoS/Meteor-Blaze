@@ -5,6 +5,7 @@ import { Tasks } from '../api/tasks.js';
 
 import  './task.js';
 import './body.html';
+import {Hists} from "../api/tasks";
 
 Template.body.onCreated(function bodyOnCreated() {
     this.state = new ReactiveDict();
@@ -41,6 +42,7 @@ Template.body.events({
         const target = event.target;
         const text = target.text.value;
         const description = target.description.value;
+
 
         Meteor.call('tasks.insert', text, description);
 

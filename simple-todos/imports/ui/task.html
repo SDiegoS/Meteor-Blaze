@@ -39,7 +39,9 @@
 
             {{#if hist}}
                 <br><br>
-                HISTORICO
+                {{#each hists}}
+                    {{> historico}}
+                {{/each}}
             {{/if}}
         </span>
     </li>

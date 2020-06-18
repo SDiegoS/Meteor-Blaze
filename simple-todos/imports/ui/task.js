@@ -1,13 +1,15 @@
-import { Meteor } from 'meteor/meteor';
+// import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
 
 import './task.html';
-import {ReactiveDict} from "meteor/reactive-dict";
+import './historico.js';
+import {Hists} from "../api/tasks";
 
 Template.task.onCreated(function bodyOnCreated() {
     this.upd = new ReactiveVar(false);
     this.hist = new ReactiveVar(false);
+    Meteor.subscribe('hists');
 });
 
 Template.task.helpers({
@@ -18,8 +20,14 @@ Template.task.helpers({
        return Template.instance().upd.get()
     },
     hist() {
-       return Template.instance().hist.get()
+        const instance = Template.instance();
+
+       return Template.instance().hist.get();
     },
+    hists(){
+        const idTask = Template.instance().data._id;
+        return Hists.find({ id_task: idTask}).fetch();
+    }
 });
 
 Template.task.events({
@@ -46,6 +54,7 @@ Template.task.events({
     },
     'click .delete'() {
         Meteor.call('tasks.remove', this._id);
+        Meteor.call('tasks.removeHist', this._id)
     },
     'click .toggle-private'(){
         Meteor.call('tasks.setPrivate', this._id, !this.private);

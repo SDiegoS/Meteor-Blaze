@@ -3,12 +3,21 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
 export const Tasks = new Mongo.Collection('tasks');
+export const Hists = new Mongo.Collection('hists');
 
 if (Meteor.isServer) {
     // Este código é executado apenas no servidor
     // Publica apenas tarefas que são públicas ou pertencem ao usuário atual
     Meteor.publish('tasks', function tasksPublication() {
         return Tasks.find({
+            $or: [
+                {private: {$ne: true}},
+                {owner: this.userId},
+            ],
+        });
+    });
+    Meteor.publish('hists', function HistPublication() {
+        return Hists.find({
             $or: [
                 {private: {$ne: true}},
                 {owner: this.userId},
@@ -35,6 +44,24 @@ Meteor.methods({
             username: Meteor.users.findOne(this.userId).username,
         });
     },
+    'hists.setHist'(hist){
+        check(hist, Object);
+        check(hist.id_task, String);
+        // check(hist.histTime, Date);
+        check(hist.desc, String);
+        check(hist.user_name, String);
+
+        const task = Tasks.findOne({_id: hist.id_task});
+        if(task){
+            if (task.private && task.owner !== this.userId) {
+                // Se a tarefa for privada, verifique se apenas o proprietário pode altera-la
+                throw new Meteor.Error('not-authorized');
+            }
+            //Adiciona Historico
+            console.log(hist)
+            Hists.insert(hist);
+        }
+    },
     'tasks.setUpdate'(update){
         check(update, Object);
         check(update._id, String);
@@ -46,7 +73,15 @@ Meteor.methods({
                 // Se a tarefa for privada, verifique se apenas o proprietário pode altera-la
                 throw new Meteor.Error('not-authorized');
             }
-            Tasks.update({_id: update._id}, { $set:  update.$set});
+            if(Tasks.update({_id: update._id}, { $set:  update.$set})){
+                const hist = {
+                    id_task: update._id,
+                    histTime: new Date(),
+                    desc: 'Update',
+                    user_name: Meteor.users.findOne(this.userId).username
+                }
+                Meteor.call('hists.setHist', hist)
+            }
         }
     },
     'tasks.remove'(taskId) {
@@ -57,6 +92,11 @@ Meteor.methods({
             // Se a tarefa for privada, verifique se apenas o proprietário pode excluí-la
             throw new Meteor.Error('not-authorized');
         }
+
+        Tasks.remove(taskId);
+    },
+    'tasks.removeHist'(taskId) {
+        check(taskId, String);
 
         Tasks.remove(taskId);
     },
