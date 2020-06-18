@@ -3,11 +3,19 @@ import { Template } from 'meteor/templating';
 
 
 import './task.html';
+import {ReactiveDict} from "meteor/reactive-dict";
+
+Template.task.onCreated(function bodyOnCreated() {
+    this.upd = new ReactiveVar(false);
+});
 
 Template.task.helpers({
     isOwner() {
         return this.Owner === Meteor.userId();
     },
+    upd() {
+       return Template.instance().upd.get()
+    }
 });
 
 Template.task.events({
@@ -16,7 +24,19 @@ Template.task.events({
         Meteor.call('tasks.setChecked', this._id, !this.checked);
     },
     'click .upd'(){
-        Meteor.call('tasks.setUpdate', this._id);
+        let upd = Template.instance().upd.get();
+
+        if (upd){
+            const update = {
+                _id: this._id,
+                $set: {
+                    text: $('#edit').val()
+                }
+            };
+            Meteor.call('tasks.setUpdate', update);
+        }
+
+        upd = upd ? Template.instance().upd.set(false) : Template.instance().upd.set(true);
     },
     'click .delete'() {
         Meteor.call('tasks.remove', this._id);

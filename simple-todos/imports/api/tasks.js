@@ -35,18 +35,19 @@ Meteor.methods({
             username: Meteor.users.findOne(this.userId).username,
         });
     },
-    'tasks.setUpdate'(taskId, text, description){
-        check(taskId, String);
-        text(text, String);
-        description(description, String);
+    'tasks.setUpdate'(update){
+        check(update, Object);
+        check(update._id, String);
+        check(update.$set, Object);
 
-        const task = Tasks.findOne(taskId);
-        if (task.private && task.owner !== this.userId) {
-            // Se a tarefa for privada, verifique se apenas o proprietário pode altera-la
-            throw new Meteor.Error('not-authorized');
+        const task = Tasks.findOne({_id: update._id});
+        if(task){
+            if (task.private && task.owner !== this.userId) {
+                // Se a tarefa for privada, verifique se apenas o proprietário pode altera-la
+                throw new Meteor.Error('not-authorized');
+            }
+            Tasks.update({_id: update._id}, { $set:  update.$set});
         }
-
-        Tasks.update(taskId, { $set: { text: text,  description: description} });
     },
     'tasks.remove'(taskId) {
         check(taskId, String);
