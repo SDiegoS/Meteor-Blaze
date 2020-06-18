@@ -7,6 +7,7 @@ import {ReactiveDict} from "meteor/reactive-dict";
 
 Template.task.onCreated(function bodyOnCreated() {
     this.upd = new ReactiveVar(false);
+    this.hist = new ReactiveVar(false);
 });
 
 Template.task.helpers({
@@ -15,7 +16,10 @@ Template.task.helpers({
     },
     upd() {
        return Template.instance().upd.get()
-    }
+    },
+    hist() {
+       return Template.instance().hist.get()
+    },
 });
 
 Template.task.events({
@@ -23,6 +27,7 @@ Template.task.events({
         // Defina a propriedade marcada para o oposto do seu valor atual
         Meteor.call('tasks.setChecked', this._id, !this.checked);
     },
+    'click .js-chamaHistorico':(event, template) => template.hist.set(!template.hist.get()),
     'click .upd'(){
         let upd = Template.instance().upd.get();
 

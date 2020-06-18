@@ -6,6 +6,7 @@
         {{else}}
             <button class="upd">✎</button>
         {{/if}}
+        <button class="hist js-chamaHistorico">⌚</button>
 
 
         <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
@@ -26,6 +27,7 @@
              {{else}}
                 {{text}}
              {{/if}}
+
             {{#if description}}
                 <br><br> Description:
                 {{#if upd}}
@@ -33,6 +35,11 @@
                 {{else}}
                     {{description}}
                 {{/if}}
+            {{/if}}
+
+            {{#if hist}}
+                <br><br>
+                HISTORICO
             {{/if}}
         </span>
     </li>
