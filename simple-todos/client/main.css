@@ -49,6 +49,12 @@ form {
   position: relative;
 }
 
+input[type=text]{
+  border: 1px solid #8cb4cc;
+  border-radius: 4px;
+  padding: 4px;
+}
+
 .new-task input {
   box-sizing: border-box;
   padding: 10px 0;

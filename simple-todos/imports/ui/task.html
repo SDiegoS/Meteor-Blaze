@@ -27,7 +27,12 @@
                 {{text}}
              {{/if}}
             {{#if description}}
-                <br><br> Description: {{description}}
+                <br><br> Description:
+                {{#if upd}}
+                    <input type="text" id="editDesc" value="{{description}}">
+                {{else}}
+                    {{description}}
+                {{/if}}
             {{/if}}
         </span>
     </li>

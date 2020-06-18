@@ -30,7 +30,8 @@ Template.task.events({
             const update = {
                 _id: this._id,
                 $set: {
-                    text: $('#edit').val()
+                    text: $('#edit').val(),
+                    description: $('#editDesc').val()
                 }
             };
             Meteor.call('tasks.setUpdate', update);
