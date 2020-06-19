@@ -8,6 +8,9 @@ import './body.html';
 
 Template.body.onCreated(function bodyOnCreated() {
     Meteor.subscribe('tasks');
+
+    this.videoIdByRouter = new ReactiveVar(false)
+    console.log(this)
 });
 
 Template.body.helpers({
@@ -18,6 +21,7 @@ Template.body.helpers({
     incompleteCount() {
         return Tasks.find({ checked: { $ne: true } }).count();
     },
+    videoIdByRouter:() => Template.instance().videoIdByRouter.get()
 });
 
 Template.body.events({

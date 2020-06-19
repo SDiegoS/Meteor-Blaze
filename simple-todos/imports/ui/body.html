@@ -14,9 +14,13 @@
     </header>
 
     <ul>
-        {{#each tasks}}
-            {{> task}}
-        {{/each}}
+        {{#if videoIdByRouter}}
+            {{>video link=videoIdByRouter}}
+        {{else}}
+            {{#each tasks}}
+                {{> task}}
+            {{/each}}
+        {{/if}}
     </ul>
 </div>
 </body>
