@@ -2,16 +2,18 @@ import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 
 import { Tasks } from '../api/tasks.js';
+import '../lib/router.js';
 
 import './task.js';
 import './body.html';
 
 Template.body.onCreated(function bodyOnCreated() {
     Meteor.subscribe('tasks');
-    const link = window.location.search.split('=');
-    this.videoIdByRouter = new ReactiveVar(link.pop())
-    console.log(window.location.search)
+    // const link = window.location.search.split('=');
+    // this.videoIdByRouter = new ReactiveVar(link.pop())
+
 });
+
 
 Template.body.helpers({
     tasks() {
@@ -21,7 +23,7 @@ Template.body.helpers({
     incompleteCount() {
         return Tasks.find({ checked: { $ne: true } }).count();
     },
-    videoIdByRouter:() => Template.instance().videoIdByRouter.get()
+    videoIdByRouter:() => FlowRouter.getQueryParam('videoIdByRouter')
 });
 
 Template.body.events({
@@ -42,5 +44,14 @@ Template.body.events({
         // Clear form
         target.text.value = '';
     },
+    'submit .changeVideo'(event,template){
+        event.preventDefault()
 
+        FlowRouter.setQueryParams({videoIdByRouter: event.target.video.value})
+    },
+
+    'click #home'(event){
+        event.preventDefault()
+        FlowRouter.go('/')
+    }
 });

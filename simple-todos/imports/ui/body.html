@@ -13,8 +13,17 @@
         {{/if}}
     </header>
 
+
+
     <ul>
         {{#if videoIdByRouter}}
+            <form class="changeVideo">
+                <input type="text" name="video">
+            </form>
+            <br>
+
+            <button id="home">Back to home</button>
+            <hr>
             {{>video link=videoIdByRouter}}
         {{else}}
             {{#each tasks}}
