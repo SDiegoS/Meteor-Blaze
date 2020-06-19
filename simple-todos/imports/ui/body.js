@@ -8,9 +8,9 @@ import './body.html';
 
 Template.body.onCreated(function bodyOnCreated() {
     Meteor.subscribe('tasks');
-
-    this.videoIdByRouter = new ReactiveVar(false)
-    console.log(this)
+    const link = window.location.search.split('=');
+    this.videoIdByRouter = new ReactiveVar(link.pop())
+    console.log(window.location.search)
 });
 
 Template.body.helpers({
@@ -37,7 +37,7 @@ Template.body.events({
         const textForm = tratamento[tratamento.length-1].split('=');
 
         // Insert a task into the collection
-        Meteor.call('tasks.insert', text, textForm[textForm.length-1]);
+        Meteor.call('tasks.insert', text, textForm.pop());
 
         // Clear form
         target.text.value = '';
