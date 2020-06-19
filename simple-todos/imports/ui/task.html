@@ -1,6 +1,13 @@
 <template name="task">
     <li class="{{#if checked}}checked{{/if}} {{#if private}}Private{{/if}}">
         <button class="delete">&times;</button>
+        {{#if upd}}
+            <button class="upd">✔</button>
+        {{else}}
+            <button class="upd">✎</button>
+        {{/if}}
+        <button class="hist js-chamaHistorico">⌚</button>
+
 
         <input type="checkbox" checked="{{checked}}" class="toggle-checked" />
 
@@ -14,6 +21,28 @@
             </button>
         {{/if}}
 
-        <span class="text"><strong>{{username}}</strong> - {{text}}</span>
+        <span class="text"><strong>{{username}}</strong> -
+            {{#if upd}}
+                <input type="text" id="edit" value="{{text}}">
+             {{else}}
+                {{text}}
+             {{/if}}
+
+            {{#if description}}
+                <br><br> Description:
+                {{#if upd}}
+                    <input type="text" id="editDesc" value="{{description}}">
+                {{else}}
+                    {{description}}
+                {{/if}}
+            {{/if}}
+
+            {{#if hist}}
+                <br><br>
+                {{#each hists}}
+                    {{> historico}}<hr>
+                {{/each}}
+            {{/if}}
+        </span>
     </li>
 </template>
