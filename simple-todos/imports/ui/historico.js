@@ -8,7 +8,7 @@ Template.historico.helpers({
         const idTask = Template.instance().data._id;
         const data =  Hists.findOne({ _id: idTask}).histTime;
 
-        return `${data.getDate()}/${data.getMonth()+1}/${data.getFullYear()}`;
+        return `${data.getDate()}/${data.getMonth()+1}/${data.getFullYear()}  ${data.getHours()}:${data.getMinutes()}`;
 
     }
 });
