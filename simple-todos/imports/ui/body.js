@@ -29,8 +29,11 @@ Template.body.events({
         const target = event.target;
         const text = target.text.value;
 
+        const tratamento = text.split('/');
+        const textForm = tratamento[tratamento.length-1].split('=');
+
         // Insert a task into the collection
-        Meteor.call('tasks.insert', text);
+        Meteor.call('tasks.insert', text, textForm[textForm.length-1]);
 
         // Clear form
         target.text.value = '';
