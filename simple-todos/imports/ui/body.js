@@ -36,7 +36,7 @@ Template.body.events({
         const text = target.text.value;
 
         const tratamento = text.split('/');
-        const textForm = tratamento[tratamento.length-1].split('=');
+        const textForm = tratamento.pop().split('=');
 
         // Insert a task into the collection
         Meteor.call('tasks.insert', text, textForm.pop());
