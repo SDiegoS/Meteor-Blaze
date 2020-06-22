@@ -23,7 +23,12 @@ Template.body.helpers({
     incompleteCount() {
         return Tasks.find({ checked: { $ne: true } }).count();
     },
-    videoIdByRouter:() => FlowRouter.getQueryParam('videoIdByRouter')
+    videoIdByRouter() {
+        const videoId = FlowRouter.getQueryParam('videoIdByRouter')
+        const videoIdBank = Tasks.findOne({link: videoId});
+        return videoIdBank ? videoId : false
+    }
+
 });
 
 Template.body.events({
@@ -53,5 +58,5 @@ Template.body.events({
     'click #home'(event){
         event.preventDefault()
         FlowRouter.go('/')
-    }
+    },
 });
